@@ -14,6 +14,7 @@
     "express": "^4.10.4",
     "express-session": "^1.9.2",
     "jade": "^1.8.0",
+    "lodash": "^3.3.1",
     "morgan": "^1.5.0",
     "serve-favicon": "^2.1.5",
     "strong-agent": "^1.0.3",
