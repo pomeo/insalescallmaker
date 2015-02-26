@@ -1,6 +1,8 @@
 var express    = require('express'),
     router     = express.Router(),
     _          = require('lodash'),
+    mongoose   = require('mongoose'),
+    Schema     = mongoose.Schema,
     winston    = require('winston'),
     Logentries = require('winston-logentries');
 
