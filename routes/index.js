@@ -1,7 +1,8 @@
 var express    = require('express'),
     router     = express.Router(),
+    _          = require('lodash'),
     winston    = require('winston'),
-    Logentries  = require('winston-logentries');
+    Logentries = require('winston-logentries');
 
 if (process.env.NODE_ENV === 'development') {
   var logger = new (winston.Logger)({
