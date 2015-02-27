@@ -13,6 +13,7 @@ var gulp = require('gulp'),
     karma = require('karma').server,
     watch = require('gulp-watch'),
     sourcemaps = require('gulp-sourcemaps'),
+    react = require('gulp-react'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload;
 
@@ -45,6 +46,19 @@ gulp.task('compress', function() {
           .pipe(gulp.dest('public/js'))
           .pipe(reload({stream:true}))
           .pipe(notify('Update js <%= file.relative %>'));
+        });
+});
+
+gulp.task('jsx', function () {
+  watch({glob: 'src/js/**/*.jsx'},
+        function(files) {
+          files
+          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+          .pipe(sourcemaps.init())
+          .pipe(react())
+          .pipe(gulp.dest('public/js'))
+          .pipe(reload({stream:true}))
+          .pipe(notify('Update jsx <%= file.relative %>'));
         });
 });
 
@@ -121,6 +135,6 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('default', ['minify-css', 'stylus', 'images', 'compress', 'copy-json', 'browser-sync'], function () {
+gulp.task('default', ['minify-css', 'stylus', 'images', 'compress', 'copy-json', 'jsx', 'browser-sync'], function () {
     gulp.watch(['views/**/*.jade'], reload);
 });
