@@ -8,8 +8,14 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var bugsnag = require('bugsnag');
-bugsnag.register(process.env.bugsnag);
+var GitHubApi = require('github');
+var github = new GitHubApi({
+  version: '3.0.0'
+});
+github.authenticate({
+  type: 'oauth',
+  token: process.env.github
+});
 
 var routes = require('./routes/index');
 
@@ -25,7 +31,6 @@ if (app.get('env') !== 'development') {
 }
 app.set('trust proxy', 1);
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(bugsnag.requestHandler);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -56,7 +61,6 @@ if (app.get('env') !== 'production') {
 
 app.use(session(sessionConfig));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bugsnag.errorHandler);
 
 app.use('/', routes);
 
@@ -85,6 +89,16 @@ if (app.get('env') === 'development') {
 // no stacktraces leaked to user
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
+  if (err.status !== 404) {
+    github.issues.create({
+      user: 'pomeo',
+      repo: 'insalescallmaker',
+      title: err.message.toString(),
+      body: JSON.stringify(err.stack).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+      assignee: 'pomeo',
+      labels: ['bug', 'programmer error']
+    });
+  }
   res.render('error', {
     message: err.message,
     error: {}
