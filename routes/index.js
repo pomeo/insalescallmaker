@@ -108,14 +108,10 @@ router.get('/install', function(req, res) {
           } else {
             log('Магазин id=' + req.query.insales_id + ' Установлен');
             res.sendStatus(200);
-            // jobs.create('syncall', {
+            // jobs.create('js', {
             //   id: req.query.insales_id
             // }).delay(600).priority('normal').save();
             // log('Магазин id=' + req.query.insales_id + ' После установки отправка задания в очередь на синхронизацию');
-            // jobs.create('pay', {
-            //   id: req.query.insales_id
-            // }).delay(600).priority('normal').save();
-            // log('Магазин id=' + req.query.insales_id + ' После установки отправка задания в очередь на проверку оплаты');
           }
         });
       } else {
@@ -134,14 +130,10 @@ router.get('/install', function(req, res) {
             } else {
               log('Магазин id=' + req.query.insales_id + ' Установлен');
               res.sendStatus(200);
-              // jobs.create('syncall', {
+              // jobs.create('js', {
               //   id: a.insalesid
               // }).delay(600).priority('normal').save();
               // log('Магазин id=' + req.query.insales_id + ' После установки отправка задания в очередь на синхронизацию');
-              // jobs.create('pay', {
-              //   id: a.insalesid
-              // }).delay(600).priority('normal').save();
-              // log('Магазин id=' + req.query.insales_id + ' После установки отправка задания в очередь на проверку оплаты');
             }
           });
         }
