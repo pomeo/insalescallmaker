@@ -13,30 +13,75 @@ html.uk-height-1-1
     link(rel="stylesheet", href="/css/uikit.css")
     link(rel="stylesheet", href="/css/uikit.gradient.css")
     link(rel="stylesheet", href="/css/styles.css")
-    script(async="true", src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js")
     link(rel="shortcut icon", href="/favicon.ico", type="image/x-icon")
+    style
+      | #startup {
+      |     width: 100%;
+      |     height: 100%;
+      |     position: fixed;
+      |     background-color: #eeeeee;
+      |     -moz-user-select: none;
+      |     -webkit-user-select: none;
+      |     display: flex;
+      |     align-items: center;
+      |     justify-content: center;
+      | }
+      | .spinner-container {
+      |     animation: rotate 2s linear infinite;
+      |     -webkit-animation: rotate 2s linear infinite;
+      | }
+      | .spinner-container .path {
+      |     stroke-dasharray: 1,150; /* 1%, 101% circumference */
+      |     stroke-dashoffset: 0;
+      |     stroke: rgba(27, 154, 89, 0.7);
+      |     stroke-linecap: round;
+      |     animation: dash 1.5s ease-in-out infinite;
+      |     -webkit-animation: dash 1.5s ease-in-out infinite;
+      | }
+      | @keyframes rotate{
+      |     100% { transform: rotate(360deg); }
+      | }
+      | @keyframes dash {
+      |       0% {
+      |         stroke-dasharray: 1,150;  /* 1%, 101% circumference */
+      |         stroke-dashoffset: 0;
+      |     }
+      |     50% {
+      |         stroke-dasharray: 90,150; /* 70%, 101% circumference */
+      |         stroke-dashoffset: -35;   /* 25% circumference */
+      |     }
+      |     100% {
+      |         stroke-dasharray: 90,150; /* 70%, 101% circumference */
+      |         stroke-dashoffset: -124;  /* -99% circumference */
+      |     }
+      | }
+      | @-webkit-keyframes rotate{
+      |     100% { transform: rotate(360deg); }
+      | }
+      | @-webkit-keyframes dash {
+      |       0% {
+      |         stroke-dasharray: 1,150;  /* 1%, 101% circumference */
+      |         stroke-dashoffset: 0;
+      |     }
+      |     50% {
+      |         stroke-dasharray: 90,150; /* 70%, 101% circumference */
+      |         stroke-dashoffset: -35;   /* 25% circumference */
+      |     }
+      |     100% {
+      |         stroke-dasharray: 90,150; /* 70%, 101% circumference */
+      |         stroke-dashoffset: -124;  /* -99% circumference */
+      |     }
+      | }
   body.uk-height-1-1
-    block content
-    script(src="/js/jquery-2.1.1.js")
+    div#startup
+      svg.spinner-container(width="65px", height="65px", viewBox="0 0 52 52")
+        circle.path(cx="26px", cy="26px", r="20px", fill="none", stroke-width="4px")
+    script(src="/js/jquery-2.1.3.js")
     script(src="/js/uikit.js")
+    script(src="/js/velocity.js")
+    script(src="/js/react-0.12.2.js")
     script(src="/js/ui.js")
-    script(type="text/javascript")
-     | var once = true;
-     | setInterval(function() {
-     |   if (once) {
-     |     if (typeof(Zenbox) !== "undefined") {
-     |       Zenbox.init({
-     |         dropboxID:   "20299322",
-     |         url:         "https://salesapps.zendesk.com",
-     |         tabTooltip:  "Поддержка",
-     |         tabImageURL: "https://p3.zdassets.com/external/zenbox/images/tab_ru_support.png",
-     |         tabColor:    "black",
-     |         tabPosition: "Left"
-     |       });
-     |       once = false;
-     |     }
-     |   }
-     | }, 3000);
+    script(src="/js/home.js")
     script(type="text/javascript")
      | (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter28707293 = new Ya.Metrika({ id:28707293, webvisor:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");
     noscript
