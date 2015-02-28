@@ -1,3 +1,5 @@
+/* jshint node:true */
+/* jshint laxbreak:true */
 var express    = require('express'),
     router     = express.Router(),
     _          = require('lodash'),
