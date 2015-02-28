@@ -1,0 +1,1 @@
+{"version":3,"sources":["ui.js"],"names":["$","document","ready"],"mappings":"AAAAA,EAAEC,UAAUC,MAAM","file":"ui.js","sourcesContent":["$(document).ready(function() {\n  \n});"],"sourceRoot":"/source/"}
