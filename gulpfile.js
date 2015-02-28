@@ -14,6 +14,7 @@ var gulp = require('gulp'),
     watch = require('gulp-watch'),
     sourcemaps = require('gulp-sourcemaps'),
     react = require('gulp-react'),
+    concat = require('gulp-concat'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload;
 
@@ -60,6 +61,21 @@ gulp.task('jsx', function () {
           .pipe(reload({stream:true}))
           .pipe(notify('Update jsx <%= file.relative %>'));
         });
+});
+
+gulp.task('concat', function() {
+  return gulp.src(['src/js/ui.js', 'src/js/home.jsx'])
+         .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+         .pipe(sourcemaps.init())
+         .pipe(react())
+         .pipe(uglify())
+         .pipe(concat('app.js'))
+         .pipe(sourcemaps.write('maps', {
+           sourceMappingURLPrefix: '/js/'
+         }))
+         .pipe(gulp.dest('public/js'))
+         .pipe(reload({stream:true}))
+         .pipe(notify('Update app.js'));
 });
 
 gulp.task('copy-json', function() {
@@ -115,7 +131,7 @@ gulp.task('mocha', function() {
             if (!/tests? failed/.test(err.stack)) {
               console.log(err.stack);
             }
-          })
+          });
         }));
 });
 
@@ -135,6 +151,8 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('default', ['minify-css', 'stylus', 'images', 'compress', 'copy-json', 'jsx', 'browser-sync'], function () {
-    gulp.watch(['views/**/*.jade'], reload);
+gulp.task('default', ['minify-css', 'stylus', 'images', 'compress', 'copy-json', 'concat', 'browser-sync'], function () {
+  gulp.watch(['views/**/*.jade'], reload);
+  gulp.watch('src/js/**/*.jsx', ['concat']);
+  gulp.watch('src/js/**/*.js', ['concat']);
 });
