@@ -6,6 +6,7 @@ var express    = require('express'),
     mongoose   = require('mongoose'),
     Schema     = mongoose.Schema,
     moment     = require('moment'),
+    hat        = require('hat'),
     crypto     = require('crypto'),
     winston    = require('winston'),
     Logentries = require('winston-logentries');
