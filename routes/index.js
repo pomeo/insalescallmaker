@@ -40,6 +40,9 @@ router.get('/', function(req, res) {
       }
     });
   } else {
+    if (process.env.NODE_ENV === 'development') {
+      req.session.insalesid = 74112;
+    }
     var insid = req.session.insalesid || req.query.insales_id;
     log('Магазин id=' + insid + ' Попытка входа магазина');
     if ((req.query.insales_id &&
