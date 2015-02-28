@@ -1,6 +1,44 @@
 doctype html
-html
+html.uk-height-1-1
   head
-    title= title
-  body
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=edge,chrome=1")
+    //[if lt IE 9]>
+    script(src="/js/es5-shim.js")
+    script(src="/js/html5shiv.js")
+    //<![endif]
+    title Обратный звонок
+    meta(name="viewport", content="width=device-width")
+    meta(name="google", content="notranslate")
+    link(rel="stylesheet", href="/css/uikit.css")
+    link(rel="stylesheet", href="/css/uikit.gradient.css")
+    link(rel="stylesheet", href="/css/styles.css")
+    script(async="true", src="//assets.zendesk.com/external/zenbox/v2.6/zenbox.js")
+    link(rel="shortcut icon", href="/favicon.ico", type="image/x-icon")
+  body.uk-height-1-1
     block content
+    script(src="/js/jquery-2.1.1.js")
+    script(src="/js/uikit.js")
+    script(src="/js/ui.js")
+    script(type="text/javascript")
+     | var once = true;
+     | setInterval(function() {
+     |   if (once) {
+     |     if (typeof(Zenbox) !== "undefined") {
+     |       Zenbox.init({
+     |         dropboxID:   "20299322",
+     |         url:         "https://salesapps.zendesk.com",
+     |         tabTooltip:  "Поддержка",
+     |         tabImageURL: "https://p3.zdassets.com/external/zenbox/images/tab_ru_support.png",
+     |         tabColor:    "black",
+     |         tabPosition: "Left"
+     |       });
+     |       once = false;
+     |     }
+     |   }
+     | }, 3000);
+    script(type="text/javascript")
+     | (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter28707293 = new Ya.Metrika({ id:28707293, webvisor:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");
+    noscript
+      div
+        img(src="//mc.yandex.ru/watch/28707293", style="position:absolute; left:-9999px;", alt="")
