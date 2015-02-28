@@ -26,7 +26,60 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 router.get('/', function(req, res) {
-  res.render('index', { title: 'Express' });
+  if (req.query.token && (req.query.token !== '')) {
+    Apps.findOne({autologin:req.query.token}, function(err, a) {
+      if (a) {
+        log('Магазин id=' + a.insalesid + ' Создаём сессию и перебрасываем на главную');
+        req.session.insalesid = a.insalesid;
+        res.redirect('/');
+      } else {
+        log('Ошибка автологина. Неправильный token при переходе из insales', 'warn');
+        res.render('index', {
+          msg : 'Ошибка автологина'
+        });
+      }
+    });
+  } else {
+    var insid = req.session.insalesid || req.query.insales_id;
+    log('Магазин id=' + insid + ' Попытка входа магазина');
+    if ((req.query.insales_id &&
+         (req.query.insales_id !== '')) ||
+        req.session.insalesid !== undefined) {
+      Apps.findOne({insalesid:insid}, function(err, app) {
+        if (app.enabled === true) {
+          if (req.session.insalesid) {
+            res.render('index');
+          } else {
+            log('Авторизация ' + req.query.insales_id);
+            var id = hat();
+            app.autologin = crypto.createHash('md5')
+                            .update(id + app.token)
+                            .digest('hex');
+            app.save(function (err) {
+              if (err) {
+                res.send(err, 500);
+              } else {
+                res.redirect('http://' + app.insalesurl
+                            + '/admin/applications/'
+                            + process.env.insalesid
+                            + '/login?token='
+                            + id
+                            + '&login=http://callmaker.salesapps.ru');
+              }
+            });
+          }
+        } else {
+          res.render('index', {
+            msg : 'Приложение не установлено для данного магазина'
+          });
+        }
+      });
+    } else {
+      res.render('index', {
+        msg : 'Вход возможен только из панели администратора insales.ru <span class="uk-icon-long-arrow-right"></span> приложения <span class="uk-icon-long-arrow-right"></span> установленные <span class="uk-icon-long-arrow-right"></span> войти'
+      });
+    }
+  }
 });
 
 router.get('/install', function(req, res) {
