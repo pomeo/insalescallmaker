@@ -3,6 +3,7 @@ var express    = require('express'),
     _          = require('lodash'),
     mongoose   = require('mongoose'),
     Schema     = mongoose.Schema,
+    moment     = require('moment'),
     winston    = require('winston'),
     Logentries = require('winston-logentries');
 
