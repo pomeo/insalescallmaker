@@ -48,4 +48,4 @@ function log(logMsg, logType) {
   } else {
     logger.info(logMsg);
   }
-};
+}
