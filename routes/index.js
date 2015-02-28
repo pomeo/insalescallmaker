@@ -100,6 +100,7 @@ router.get('/install', function(req, res) {
           token      : crypto.createHash('md5')
                        .update(req.query.token + process.env.insalessecret)
                        .digest('hex'),
+          js         : false,
           created_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
           updated_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
           enabled    : true
@@ -111,10 +112,6 @@ router.get('/install', function(req, res) {
           } else {
             log('Магазин id=' + req.query.insales_id + ' Установлен');
             res.sendStatus(200);
-            // jobs.create('js', {
-            //   id: req.query.insales_id
-            // }).delay(600).priority('normal').save();
-            // log('Магазин id=' + req.query.insales_id + ' После установки отправка задания в очередь на синхронизацию');
           }
         });
       } else {
@@ -124,6 +121,7 @@ router.get('/install', function(req, res) {
           a.token = crypto.createHash('md5')
                     .update(req.query.token + process.env.insalessecret)
                     .digest('hex');
+          a.js = false;
           a.updated_at = moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ');
           a.enabled = true;
           a.save(function (err) {
@@ -133,10 +131,6 @@ router.get('/install', function(req, res) {
             } else {
               log('Магазин id=' + req.query.insales_id + ' Установлен');
               res.sendStatus(200);
-              // jobs.create('js', {
-              //   id: a.insalesid
-              // }).delay(600).priority('normal').save();
-              // log('Магазин id=' + req.query.insales_id + ' После установки отправка задания в очередь на синхронизацию');
             }
           });
         }
@@ -156,6 +150,7 @@ router.get('/uninstall', function(req, res) {
       req.query.insales_id) {
     Apps.findOne({insalesid:req.query.insales_id}, function(err, a) {
       if (a.token == req.query.token) {
+        a.js = false;
         a.updated_at = moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ');
         a.enabled = false;
         a.save(function (err) {
@@ -187,6 +182,11 @@ AppsSchema.add({
   insalesurl  : String, // урл магазина
   token       : String, // ключ доступа к api
   autologin   : String, // сохраняется ключ автологина
+  domain      : String, // домен сайта
+  name        : String, // имя клиента (также используется для автоматического создания первого менеджера)
+  email       : String, // email клиента (его логин)
+  phone       : Number, // телефон клиента в международном формате (7XXXXXXXXX)
+  js          : Boolean, // флаг установки кода callmaker
   created_at  : Date, // дата создания записи
   updated_at  : Date, // дата изменения записи
   enabled     : Boolean // установлено или нет приложение для магазина
