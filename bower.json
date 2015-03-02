@@ -19,6 +19,7 @@
     "react": "~0.12.2",
     "superagent": "~0.21.0",
     "uikit": "~2.17.0",
-    "velocity": "~1.2.2"
+    "velocity": "~1.2.2",
+    "material-ui": "~0.7.0"
   }
 }
