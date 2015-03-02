@@ -34,13 +34,18 @@ gulp.task('images', function () {
         });
 });
 
-gulp.task('compress', function() {
-  watch({glob: 'src/js/**/*.js'},
+gulp.task('libs', function() {
+  watch({glob: ['bower_components/velocity/velocity.js',
+                'bower_components/superagent/superagent.js',
+                'bower_components/lodash/lodash.js',
+                'bower_components/react/react.js',
+                'bower_components/react-router/build/global/ReactRouter.js']},
         function(files) {
           files
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(sourcemaps.init())
           .pipe(uglify())
+          .pipe(concat('libs.js'))
           .pipe(sourcemaps.write('maps', {
             sourceMappingURLPrefix: '/js/'
           }))
@@ -50,58 +55,22 @@ gulp.task('compress', function() {
         });
 });
 
-gulp.task('jsx', function () {
-  watch({glob: 'src/js/**/*.jsx'},
+gulp.task('compress', function() {
+  watch({glob: ['src/js/ui.js',
+                'src/js/app.jsx']},
         function(files) {
           files
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(sourcemaps.init())
           .pipe(react())
+          .pipe(uglify())
+          .pipe(concat('app.js'))
+          .pipe(sourcemaps.write('maps', {
+            sourceMappingURLPrefix: '/js/'
+          }))
           .pipe(gulp.dest('public/js'))
           .pipe(reload({stream:true}))
-          .pipe(notify('Update jsx <%= file.relative %>'));
-        });
-});
-
-gulp.task('concat', function() {
-  return gulp.src(['src/js/ui.js', 'src/js/app.jsx'])
-         .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-         .pipe(sourcemaps.init())
-         .pipe(react())
-         .pipe(uglify())
-         .pipe(concat('app.js'))
-         .pipe(sourcemaps.write('maps', {
-           sourceMappingURLPrefix: '/js/'
-         }))
-         .pipe(gulp.dest('public/js'))
-         .pipe(reload({stream:true}))
-         .pipe(notify('Update app.js'));
-});
-
-gulp.task('copy-json', function() {
-  watch({glob: 'src/js/**/*.json'},
-        function(files) {
-          files
-          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-          .pipe(gulp.dest('public/js'))
-          .pipe(reload({stream:true}))
-          .pipe(notify('Update json <%= file.relative %>'));
-        });
-});
-
-gulp.task('minify-css', function() {
-  watch({glob: 'src/css/**/*.css'},
-        function(files) {
-          files
-          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-          .pipe(sourcemaps.init())
-          .pipe(minifyCSS())
-          .pipe(sourcemaps.write('maps'), {
-            sourceMappingURLPrefix: '/css/'
-          })
-          .pipe(gulp.dest('public/css'))
-          .pipe(reload({stream:true}))
-          .pipe(notify('Update css <%= file.relative %>'));
+          .pipe(notify('Update app.js'));
         });
 });
 
@@ -151,8 +120,6 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('default', ['minify-css', 'stylus', 'images', 'compress', 'copy-json', 'concat', 'browser-sync'], function () {
+gulp.task('default', ['stylus', 'images', 'libs', 'compress', 'browser-sync'], function () {
   gulp.watch(['views/**/*.jade'], reload);
-  gulp.watch('src/js/**/*.jsx', ['concat']);
-  gulp.watch('src/js/**/*.js', ['concat']);
 });
