@@ -1,0 +1,24 @@
+{
+  "name": "insalescallmaker",
+  "version": "0.0.0",
+  "homepage": "https://github.com/pomeo/insalescallmaker",
+  "authors": [
+    "Sergey Ovechkin <me@pomeo.me>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react-router": "~0.12.4",
+    "react": "~0.12.2",
+    "superagent": "~0.21.0",
+    "uikit": "~2.17.0",
+    "velocity": "~1.2.2"
+  }
+}
