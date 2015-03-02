@@ -64,7 +64,7 @@ gulp.task('jsx', function () {
 });
 
 gulp.task('concat', function() {
-  return gulp.src(['src/js/ui.js', 'src/js/home.jsx'])
+  return gulp.src(['src/js/ui.js', 'src/js/app.jsx'])
          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
          .pipe(sourcemaps.init())
          .pipe(react())
