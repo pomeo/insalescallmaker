@@ -13,7 +13,6 @@ var gulp = require('gulp'),
     karma = require('karma').server,
     watch = require('gulp-watch'),
     sourcemaps = require('gulp-sourcemaps'),
-    react = require('gulp-react'),
     concat = require('gulp-concat'),
     browserSync = require('browser-sync'),
     reload = browserSync.reload;
@@ -35,11 +34,10 @@ gulp.task('images', function () {
 });
 
 gulp.task('libs', function() {
-  watch({glob: ['bower_components/velocity/velocity.js',
+  watch({glob: ['bower_components/jquery/jquery.js',
                 'bower_components/superagent/superagent.js',
                 'bower_components/lodash/lodash.js',
-                'bower_components/react/react.js',
-                'bower_components/react-router/build/global/ReactRouter.js']},
+                'bower_components/uikit/js/uikit.js']},
         function(files) {
           files
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
@@ -56,13 +54,11 @@ gulp.task('libs', function() {
 });
 
 gulp.task('compress', function() {
-  watch({glob: ['src/js/ui.js',
-                'src/js/app.jsx']},
+  watch({glob: ['src/js/ui.js']},
         function(files) {
           files
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(sourcemaps.init())
-          .pipe(react())
           .pipe(uglify())
           .pipe(concat('app.js'))
           .pipe(sourcemaps.write('maps', {
@@ -70,18 +66,22 @@ gulp.task('compress', function() {
           }))
           .pipe(gulp.dest('public/js'))
           .pipe(reload({stream:true}))
-          .pipe(notify('Update app.js'));
+          .pipe(notify('Update app.js <%= file.relative %>'));
         });
 });
 
 gulp.task('stylus', function () {
-  watch({glob: 'src/css/**/*.styl'},
+  watch({glob: ['bower_components/uikit/css/uikit.css',
+                'bower_components/uikit/css/uikit.almost-flat.css',
+                'src/css/styles.styl']},
         function(files) {
           files
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(sourcemaps.init())
-          .pipe(stylus({compress: true, use: nib()}))
+          .pipe(stylus({compress: false, use: nib()}))
           .pipe(prefix())
+          .pipe(minifyCSS())
+          .pipe(concat('styles.css'))
           .pipe(sourcemaps.write('maps'), {
             sourceMappingURLPrefix: '/css/'
           })
