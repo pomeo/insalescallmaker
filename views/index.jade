@@ -1,6 +1,18 @@
 extends layout
 
 block content
-  div#startup
-    svg.spinner-container(width="65px", height="65px", viewBox="0 0 52 52")
-      circle.path(cx="26px", cy="26px", r="20px", fill="none", stroke-width="4px")
+  nav.uk-navbar
+    a.uk-navbar-brand(href="/")
+      img(src="/img/logo-black.png")
+    div.uk-navbar-flip
+     ul.uk-navbar-nav
+       li
+         a(href="#nav") В магазин
+       li
+         a(href="#nav") О Callmaker
+       li
+         a(href="#nav") Личный кабинет
+  div.b-form
+    p.uk-text-large.uk-text-center Есть ли у вас аккаунт в Callmaker?
+    a.uk-button.uk-width-1-1.uk-button-large.uk-margin-small-bottom(href="/login") Да
+    a.uk-button.uk-width-1-1.uk-button-large.uk-margin-small-bottom(href="/reg") Нет
