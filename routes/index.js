@@ -7,9 +7,18 @@ var express    = require('express'),
     Schema     = mongoose.Schema,
     moment     = require('moment'),
     hat        = require('hat'),
+    GitHubApi = require('github'),
+    github = new GitHubApi({
+      version: '3.0.0'
+    }),
     crypto     = require('crypto'),
     winston    = require('winston'),
     Logentries = require('winston-logentries');
+
+github.authenticate({
+  type: 'oauth',
+  token: process.env.github
+});
 
 if (process.env.NODE_ENV === 'development') {
   var logger = new (winston.Logger)({
@@ -61,6 +70,14 @@ router.get('/', function(req, res) {
             app.save(function (err) {
               if (err) {
                 res.send(err, 500);
+                github.issues.create({
+                  user: 'pomeo',
+                  repo: 'insalescallmaker',
+                  title: err.message.toString(),
+                  body: JSON.stringify(err.stack).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+                  assignee: 'pomeo',
+                  labels: ['bug', 'operational error']
+                });
               } else {
                 res.redirect('http://' + app.insalesurl
                             + '/admin/applications/'
@@ -93,38 +110,31 @@ router.get('/install', function(req, res) {
       req.query.token &&
       req.query.insales_id) {
     Apps.findOne({insalesid:req.query.insales_id}, function(err, a) {
-      if (_.isNull(a)) {
-        var app = new Apps({
-          insalesid  : req.query.insales_id,
-          insalesurl : req.query.shop,
-          token      : crypto.createHash('md5')
-                       .update(req.query.token + process.env.insalessecret)
-                       .digest('hex'),
-          js         : false,
-          created_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
-          updated_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
-          enabled    : true
-        });
-        app.save(function (err) {
-          if (err) {
-            log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
-            res.status(500).send({ error: err });
-          } else {
-            log('Магазин id=' + req.query.insales_id + ' Установлен');
-            res.sendStatus(200);
-          }
+      if (err) {
+        log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
+        res.status(500).send({ error: err });
+        github.issues.create({
+          user: 'pomeo',
+          repo: 'insalescallmaker',
+          title: err.message.toString(),
+          body: JSON.stringify(err.stack).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+          assignee: 'pomeo',
+          labels: ['bug', 'operational error']
         });
       } else {
-        if (a.enabled === true) {
-          res.status(403).send('Приложение уже установленно');
-        } else {
-          a.token = crypto.createHash('md5')
-                    .update(req.query.token + process.env.insalessecret)
-                    .digest('hex');
-          a.js = false;
-          a.updated_at = moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ');
-          a.enabled = true;
-          a.save(function (err) {
+        if (_.isNull(a)) {
+          var app = new Apps({
+            insalesid  : req.query.insales_id,
+            insalesurl : req.query.shop,
+            token      : crypto.createHash('md5')
+                         .update(req.query.token + process.env.insalessecret)
+                         .digest('hex'),
+            js         : false,
+            created_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
+            updated_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
+            enabled    : true
+          });
+          app.save(function (err) {
             if (err) {
               log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
               res.status(500).send({ error: err });
@@ -133,6 +143,26 @@ router.get('/install', function(req, res) {
               res.sendStatus(200);
             }
           });
+        } else {
+          if (a.enabled === true) {
+            res.status(403).send('Приложение уже установленно');
+          } else {
+            a.token = crypto.createHash('md5')
+                      .update(req.query.token + process.env.insalessecret)
+                      .digest('hex');
+            a.js = false;
+            a.updated_at = moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ');
+            a.enabled = true;
+            a.save(function (err) {
+              if (err) {
+                log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
+                res.status(500).send({ error: err });
+              } else {
+                log('Магазин id=' + req.query.insales_id + ' Установлен');
+                res.sendStatus(200);
+              }
+            });
+          }
         }
       }
     });
