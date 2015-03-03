@@ -34,12 +34,10 @@ gulp.task('images', function () {
 });
 
 gulp.task('libs', function() {
-  watch({glob: ['bower_components/jquery/jquery.js',
-                'bower_components/superagent/superagent.js',
-                'bower_components/lodash/lodash.js',
-                'bower_components/uikit/js/uikit.js']},
-        function(files) {
-          files
+  return gulp.src(['bower_components/jquery/jquery.js',
+                   'bower_components/superagent/superagent.js',
+                   'bower_components/lodash/lodash.js',
+                   'bower_components/uikit/js/uikit.js'])
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(sourcemaps.init())
           .pipe(uglify())
@@ -49,47 +47,51 @@ gulp.task('libs', function() {
           }))
           .pipe(gulp.dest('public/js'))
           .pipe(reload({stream:true}))
-          .pipe(notify('Update js <%= file.relative %>'));
-        });
+          .pipe(notify({
+              onLast: true,
+              message: 'Update libs.js'
+          }));
 });
 
 gulp.task('compress', function() {
-  watch({glob: ['src/js/ui.js']},
-        function(files) {
-          files
-          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-          .pipe(sourcemaps.init())
-          .pipe(uglify())
-          .pipe(concat('app.js'))
-          .pipe(sourcemaps.write('maps', {
+    return gulp.src(['src/js/ui.js'])
+        .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+        .pipe(sourcemaps.init())
+        .pipe(uglify())
+        .pipe(concat('app.js'))
+        .pipe(sourcemaps.write('maps', {
             sourceMappingURLPrefix: '/js/'
-          }))
-          .pipe(gulp.dest('public/js'))
-          .pipe(reload({stream:true}))
-          .pipe(notify('Update app.js <%= file.relative %>'));
-        });
+        }))
+        .pipe(gulp.dest('public/js'))
+        .pipe(reload({stream:true}))
+        .pipe(notify({
+            onLast: true,
+            message: 'Update app.js'
+        }));
 });
 
 gulp.task('stylus', function () {
-  watch({glob: ['bower_components/uikit/css/uikit.css',
-                'bower_components/uikit/css/uikit.almost-flat.css',
-                'src/css/styles.styl']},
-        function(files) {
-          files
-          .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
-          .pipe(sourcemaps.init())
-          .pipe(stylus({compress: false, use: nib()}))
-          .pipe(prefix())
-          .pipe(minifyCSS())
-          .pipe(concat('styles.css'))
-          .pipe(sourcemaps.write('maps'), {
+    return gulp.src(['bower_components/uikit/css/uikit.css',
+                     'bower_components/uikit/css/uikit.almost-flat.css',
+                     'src/css/styles.styl'])
+        .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
+        .pipe(sourcemaps.init())
+        .pipe(stylus({compress: false, use: nib()}))
+        .pipe(prefix())
+        .pipe(minifyCSS())
+        .pipe(concat('styles.css'))
+        .pipe(sourcemaps.write('maps'), {
             sourceMappingURLPrefix: '/css/'
-          })
-          .pipe(gulp.dest('public/css'))
-          .pipe(reload({stream:true}))
-          .pipe(notify('Update stylus <%= file.relative %>'));
-        });
+        })
+        .pipe(gulp.dest('public/css'))
+        .pipe(reload({stream:true}))
+        .pipe(notify({
+            onLast: true,
+            message: 'Update stylus'
+        }));
 });
+
+gulp.task('build', ['libs', 'compress', 'stylus']);
 
 gulp.task('mocha', function() {
   gulp.src(['test/*.js'], {read: false})
@@ -120,6 +122,8 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('default', ['stylus', 'images', 'libs', 'compress', 'browser-sync'], function () {
+gulp.task('default', ['build', 'images', 'browser-sync'], function () {
   gulp.watch(['views/**/*.jade'], reload);
+  gulp.watch(['src/**/*.styl'], ['build']);
+  gulp.watch(['src/**/*.js'], ['build']);
 });
