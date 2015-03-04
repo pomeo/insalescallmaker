@@ -37,15 +37,28 @@ if (process.env.NODE_ENV === 'development') {
 router.get('/', function(req, res) {
   if (req.query.token && (req.query.token !== '')) {
     Apps.findOne({autologin:req.query.token}, function(err, a) {
-      if (a) {
-        log('Магазин id=' + a.insalesid + ' Создаём сессию и перебрасываем на главную');
-        req.session.insalesid = a.insalesid;
-        res.redirect('/');
-      } else {
-        log('Ошибка автологина. Неправильный token при переходе из insales', 'warn');
-        res.render('index', {
-          msg : 'Ошибка автологина'
+      if (err) {
+        log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
+        res.status(500).send({ error: err });
+        github.issues.create({
+          user: 'pomeo',
+          repo: 'insalescallmaker',
+          title: 'Ошибка при запросе магазина по id, магазин id=' + req.query.insales_id,
+          body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+          assignee: 'pomeo',
+          labels: ['bug', 'operational error']
         });
+      } else {
+        if (a) {
+          log('Магазин id=' + a.insalesid + ' Создаём сессию и перебрасываем на главную');
+          req.session.insalesid = a.insalesid;
+          res.redirect('/');
+        } else {
+          log('Ошибка автологина. Неправильный token при переходе из insales', 'warn');
+          res.render('block', {
+            msg : 'Ошибка автологина'
+          });
+        }
       }
     });
   } else {
@@ -58,40 +71,53 @@ router.get('/', function(req, res) {
          (req.query.insales_id !== '')) ||
         req.session.insalesid !== undefined) {
       Apps.findOne({insalesid:insid}, function(err, app) {
-        if (app.enabled === true) {
-          if (req.session.insalesid) {
-            res.render('index');
+        if (err) {
+          log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
+          res.status(500).send({ error: err });
+          github.issues.create({
+            user: 'pomeo',
+            repo: 'insalescallmaker',
+            title: 'Ошибка при запросе магазина по id, магазин id=' + insid,
+            body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+            assignee: 'pomeo',
+            labels: ['bug', 'operational error']
+          });
+        } else {
+          if (app.enabled === true) {
+            if (req.session.insalesid) {
+              res.render('index');
+            } else {
+              log('Авторизация ' + req.query.insales_id);
+              var id = hat();
+              app.autologin = crypto.createHash('md5')
+                              .update(id + app.token)
+                              .digest('hex');
+              app.save(function (err) {
+                if (err) {
+                  res.status(500).send({ error: err });
+                  github.issues.create({
+                    user: 'pomeo',
+                    repo: 'insalescallmaker',
+                    title: 'Ошибка при сохранении токена автологина, магазин id=' + req.query.insales_id,
+                    body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+                    assignee: 'pomeo',
+                    labels: ['bug', 'operational error']
+                  });
+                } else {
+                  res.redirect('http://' + app.insalesurl
+                              + '/admin/applications/'
+                              + process.env.insalesid
+                              + '/login?token='
+                              + id
+                              + '&login=http://callmaker.salesapps.ru');
+                }
+              });
+            }
           } else {
-            log('Авторизация ' + req.query.insales_id);
-            var id = hat();
-            app.autologin = crypto.createHash('md5')
-                            .update(id + app.token)
-                            .digest('hex');
-            app.save(function (err) {
-              if (err) {
-                res.send(err, 500);
-                github.issues.create({
-                  user: 'pomeo',
-                  repo: 'insalescallmaker',
-                  title: err.message.toString(),
-                  body: JSON.stringify(err.stack).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
-                  assignee: 'pomeo',
-                  labels: ['bug', 'operational error']
-                });
-              } else {
-                res.redirect('http://' + app.insalesurl
-                            + '/admin/applications/'
-                            + process.env.insalesid
-                            + '/login?token='
-                            + id
-                            + '&login=http://callmaker.salesapps.ru');
-              }
+            res.render('block', {
+              msg : 'Приложение не установлено для данного магазина'
             });
           }
-        } else {
-          res.render('block', {
-            msg : 'Приложение не установлено для данного магазина'
-          });
         }
       });
     } else {
@@ -111,8 +137,8 @@ router.get('/reg', function(req, res) {
         github.issues.create({
           user: 'pomeo',
           repo: 'insalescallmaker',
-          title: err.message.toString(),
-          body: JSON.stringify(err.stack).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+          title: 'Ошибка при запросе магазина по id, магазин id=' + req.session.insalesid,
+          body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
           assignee: 'pomeo',
           labels: ['bug', 'operational error']
         });
@@ -147,8 +173,8 @@ router.get('/install', function(req, res) {
         github.issues.create({
           user: 'pomeo',
           repo: 'insalescallmaker',
-          title: err.message.toString(),
-          body: JSON.stringify(err.stack).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+          title: 'Ошибка при установке приложения, этап запрос из базы данных, магазин id=' + req.query.insales_id,
+          body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
           assignee: 'pomeo',
           labels: ['bug', 'operational error']
         });
@@ -169,6 +195,14 @@ router.get('/install', function(req, res) {
             if (err) {
               log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
               res.status(500).send({ error: err });
+              github.issues.create({
+                user: 'pomeo',
+                repo: 'insalescallmaker',
+                title: 'Ошибка при установке приложения, этап сохранение нового магазина, магазин id=' + req.query.insales_id,
+                body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+                assignee: 'pomeo',
+                labels: ['bug', 'operational error']
+              });
             } else {
               log('Магазин id=' + req.query.insales_id + ' Установлен');
               res.sendStatus(200);
@@ -188,6 +222,14 @@ router.get('/install', function(req, res) {
               if (err) {
                 log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
                 res.status(500).send({ error: err });
+                github.issues.create({
+                  user: 'pomeo',
+                  repo: 'insalescallmaker',
+                  title: 'Ошибка при установке приложения, этап обновления данных, магазин id=' + req.query.insales_id,
+                  body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+                  assignee: 'pomeo',
+                  labels: ['bug', 'operational error']
+                });
               } else {
                 log('Магазин id=' + req.query.insales_id + ' Установлен');
                 res.sendStatus(200);
