@@ -144,7 +144,7 @@ router.get('/reg', function(req, res) {
         });
       } else {
         if (app.enabled === true) {
-          res.render('index');
+          res.render('reg');
         } else {
           res.render('block', {
             msg : 'Приложение не установлено для данного магазина'
