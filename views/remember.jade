@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  nav.uk-navbar
+    a.uk-navbar-brand(href="/")
+      img(src="/img/logo-black.png")
+    div.uk-navbar-flip
+     ul.uk-navbar-nav
+       li
+         a(href="http://#{domain}") В магазин
+       li
+         a(href="http://callmaker.ru/kak-rabotaet-callmaker/") О Callmaker
+       li
+         a(href="http://callmaker.ru/admin/") Личный кабинет
+  div.b-form.b-login
+    form.uk-form(action="/remember", method="post")
+      fieldset(data-uk-margin)
+        legend Введите ваш логин
+        div.uk-form-row.uk-form-icon.uk-width-1-1
+          i.uk-icon-user
+          input.uk-width-1-1(type="text", placeholder="Ваш email")
+        div.uk-form-row
+          button.uk-width-1-1.uk-button-large.uk-button Восстановить пароль
