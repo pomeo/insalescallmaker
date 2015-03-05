@@ -159,6 +159,76 @@ router.get('/reg', function(req, res) {
   }
 });
 
+router.get('/login', function(req, res) {
+  if (req.session.insalesid) {
+    Apps.findOne({insalesid: req.session.insalesid}, function(err, app) {
+      if (err) {
+        log('Магазин id=' + req.session.insalesid + ' Ошибка: ' + err, 'error');
+        res.status(500).send({ error: err });
+        github.issues.create({
+          user: 'pomeo',
+          repo: 'insalescallmaker',
+          title: 'Ошибка при запросе магазина по id, магазин id=' + req.session.insalesid,
+          body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+          assignee: 'pomeo',
+          labels: ['bug', 'operational error']
+        });
+      } else {
+        if (app.enabled === true) {
+          res.render('login', {
+            domain : app.domain
+          });
+        } else {
+          res.render('block', {
+            msg : 'Приложение не установлено для данного магазина'
+          });
+        }
+      }
+    });
+  } else {
+    res.render('block', {
+      msg : 'Вход возможен только из панели администратора insales.ru <span class="uk-icon-long-arrow-right"></span> приложения <span class="uk-icon-long-arrow-right"></span> установленные <span class="uk-icon-long-arrow-right"></span> войти'
+    });
+  }
+});
+
+router.get('/remember', function(req, res) {
+  if (req.session.insalesid) {
+    Apps.findOne({insalesid: req.session.insalesid}, function(err, app) {
+      if (err) {
+        log('Магазин id=' + req.session.insalesid + ' Ошибка: ' + err, 'error');
+        res.status(500).send({ error: err });
+        github.issues.create({
+          user: 'pomeo',
+          repo: 'insalescallmaker',
+          title: 'Ошибка при запросе магазина по id, магазин id=' + req.session.insalesid,
+          body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+          assignee: 'pomeo',
+          labels: ['bug', 'operational error']
+        });
+      } else {
+        if (app.enabled === true) {
+          res.render('remember', {
+            domain : app.domain
+          });
+        } else {
+          res.render('block', {
+            msg : 'Приложение не установлено для данного магазина'
+          });
+        }
+      }
+    });
+  } else {
+    res.render('block', {
+      msg : 'Вход возможен только из панели администратора insales.ru <span class="uk-icon-long-arrow-right"></span> приложения <span class="uk-icon-long-arrow-right"></span> установленные <span class="uk-icon-long-arrow-right"></span> войти'
+    });
+  }
+});
+
+var installCallmaker = function() {
+
+};
+
 router.get('/install', function(req, res) {
   if ((req.query.shop !== '') &&
       (req.query.token !== '') &&
