@@ -7,12 +7,39 @@ block content
     div.uk-navbar-flip
      ul.uk-navbar-nav
        li
-         a(href="#nav") В магазин
+         a(href="http://#{domain}") В магазин
        li
-         a(href="#nav") О Callmaker
+         a(href="http://callmaker.ru/kak-rabotaet-callmaker/") О Callmaker
        li
-         a(href="#nav") Личный кабинет
-  div.b-form
-    p.uk-text-large.uk-text-center Есть ли у вас аккаунт в Callmaker?
-    a.uk-button.uk-width-1-1.uk-button-large.uk-margin-small-bottom(href="/login") Да
-    a.uk-button.uk-width-1-1.uk-button-large.uk-margin-small-bottom(href="/reg") Нет
+         a(href="http://callmaker.ru/admin/") Личный кабинет
+  div.b-form.b-reg
+    form.uk-form.uk-form-stacked(action="/reg", method="post")
+      fieldset(data-uk-margin)
+        legend Регистрация
+        div.uk-form-row.uk-width-1-1
+          label.uk-form-label(for="url") Адрес вашего сайта
+          div.uk-form-icon.uk-width-1-1
+            i.uk-icon-user
+            input.uk-width-1-1(type="text", placeholder="Адрес вашего сайта", id="url")
+        div.uk-form-row.uk-width-1-1
+          label.uk-form-label(for="name") Ваше имя
+          div.uk-form-icon.uk-width-1-1
+            i.uk-icon-user
+            input.uk-width-1-1(type="text", placeholder="Ваше имя", id="name")
+        div.uk-form-row.uk-width-1-1
+          label.uk-form-label(for="email") Ваш email
+          div.uk-form-icon.uk-width-1-1
+            i.uk-icon-user
+            input.uk-width-1-1(type="text", placeholder="Ваш email", id="email")
+        div.uk-form-row.uk-width-1-1
+          label.uk-form-label(for="pass") Ваш пароль
+          div.uk-form-icon.uk-width-1-1
+            i.uk-icon-user
+            input.uk-width-1-1(type="text", placeholder="Ваш пароль", id="pass")
+        div.uk-form-row.uk-width-1-1
+          label.uk-form-label(for="phone") Ваш телефон
+          div.uk-form-icon.uk-width-1-1
+            i.uk-icon-user
+            input.uk-width-1-1(type="text", placeholder="Ваш телефон", id="phone")
+        div.uk-form-row
+          button.uk-width-1-1.uk-button-large.uk-button Зарегистрироваться
