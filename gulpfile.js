@@ -35,9 +35,11 @@ gulp.task('images', function () {
 
 gulp.task('libs', function() {
   return gulp.src(['bower_components/jquery/jquery.js',
-                   'bower_components/superagent/superagent.js',
+                   'bower_components/jquery-validation/dist/jquery.validate.js',
+                   'bower_components/jquery-form/jquery.form.js',
                    'bower_components/lodash/lodash.js',
-                   'bower_components/uikit/js/uikit.js'])
+                   'bower_components/uikit/js/uikit.js',
+                   'bower_components/uikit/js/components/notify.js'])
           .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
           .pipe(sourcemaps.init())
           .pipe(uglify())
@@ -73,6 +75,8 @@ gulp.task('compress', function() {
 gulp.task('stylus', function () {
     return gulp.src(['bower_components/uikit/css/uikit.css',
                      'bower_components/uikit/css/uikit.almost-flat.css',
+                     'bower_components/uikit/css/components/notify.almost-flat.css',
+                     'bower_components/uikit/css/components/notify.css',
                      'src/css/styles.styl'])
         .pipe(plumber({errorHandler: notify.onError("Error: <%= error.message %>")}))
         .pipe(sourcemaps.init())
