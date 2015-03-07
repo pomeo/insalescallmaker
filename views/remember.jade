@@ -13,11 +13,11 @@ block content
        li
          a(href="http://callmaker.ru/admin/") Личный кабинет
   div.b-form.b-login
-    form.uk-form(action="/remember", method="post")
+    form.uk-form(action="/remember", method="post", id="remember")
       fieldset(data-uk-margin)
         legend Введите ваш логин
         div.uk-form-row.uk-form-icon.uk-width-1-1
           i.uk-icon-user
-          input.uk-width-1-1(type="text", placeholder="Ваш email")
+          input.uk-width-1-1(type="text", placeholder="Ваш email", id="email", name="email")
         div.uk-form-row
           button.uk-width-1-1.uk-button-large.uk-button Восстановить пароль
