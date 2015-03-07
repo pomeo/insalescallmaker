@@ -128,6 +128,6 @@ gulp.task('browser-sync', function() {
 
 gulp.task('default', ['build', 'images', 'browser-sync'], function () {
   gulp.watch(['views/**/*.jade'], reload);
-  gulp.watch(['src/**/*.styl'], ['build']);
-  gulp.watch(['src/**/*.js'], ['build']);
+  gulp.watch(['src/**/*.styl'], ['stylus']);
+  gulp.watch(['src/**/*.js'], ['compress']);
 });
