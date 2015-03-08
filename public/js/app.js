@@ -1,2 +1,2 @@
-
+$(document).ready(function(){$("#remember").validate({errorClass:"uk-form-danger",validClass:"uk-form-success",highlight:function(e,i,t){$(e).addClass(i).removeClass(t)},unhighlight:function(e,i,t){$(e).removeClass(i).addClass(t)},rules:{email:{required:!0,email:!0}},messages:{email:{required:"",email:""}},submitHandler:function(e){return $(e).ajaxSubmit({success:function(e){"ok"==e?(UIkit.notify("Пароль отправлен на вашу почту",{timeout:0}),setTimeout(function(){window.location.replace("/login")},3e3)):"err"==e?UIkit.notify("Почта не существует",{timeout:0}):UIkit.notify(e,{timeout:0})}}),!1}})});
 //# sourceMappingURL=/js/maps/app.js.map
