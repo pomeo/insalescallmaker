@@ -1,4 +1,7 @@
 $(document).ready(function() {
+  $('.aff').attr('href', function() {
+    return this.href + '?referral=pomeo@pomeo.ru';
+  });
   $('#remember').validate({
     errorClass: 'uk-form-danger',
     validClass: 'uk-form-success',
