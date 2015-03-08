@@ -7,11 +7,13 @@ var express    = require('express'),
     Schema     = mongoose.Schema,
     moment     = require('moment'),
     hat        = require('hat'),
+    rest       = require('restler'),
     GitHubApi = require('github'),
     github = new GitHubApi({
       version: '3.0.0'
     }),
     crypto     = require('crypto'),
+    cc         = require('coupon-code'),
     winston    = require('winston'),
     Logentries = require('winston-logentries');
 
