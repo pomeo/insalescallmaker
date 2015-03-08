@@ -236,6 +236,58 @@ router.get('/remember', function(req, res) {
   }
 });
 
+router.post('/remember', function(req, res) {
+  if (req.session.insalesid) {
+    Apps.findOne({insalesid: req.session.insalesid}, function(err, app) {
+      if (err) {
+        log('Магазин id=' + req.session.insalesid + ' Ошибка: ' + err, 'error');
+        res.status(500).send({ error: err });
+        github.issues.create({
+          user: 'pomeo',
+          repo: 'insalescallmaker',
+          title: 'Ошибка при запросе магазина по id, магазин id=' + req.session.insalesid,
+          body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+          assignee: 'pomeo',
+          labels: ['bug', 'operational error']
+        });
+      } else {
+        if (app.enabled === true) {
+          var errid = cc.generate({ parts : 1, partLen : 6 });
+          rest.get('http://callmaker.ru/api/resetpass/', {
+            query: {
+              login: req.body.email.toLowerCase()
+            },
+            timeout: 5000
+          }).once('timeout', function(ms){
+            log('Магазин id=' + req.session.insalesid + ' #' + errid + ' Ошибка: Таймаут ' + ms + ' ms', 'error');
+            res.status(200).send('Ошибка номер #' + errid);
+          }).once('error',function(err, response) {
+            log('Магазин id=' + req.session.insalesid + ' #' + errid + ' Ошибка: ' + err, 'error');
+            res.status(200).send('Ошибка номер #' + errid);
+          }).once('abort',function() {
+            log('Магазин id=' + req.session.insalesid + ' #' + errid + ' Ошибка: Abort', 'error');
+            res.status(200).send('Ошибка номер #' + errid);
+          }).once('fail',function(data, response) {
+            log('Магазин id=' + req.session.insalesid + ' #' + errid + ' Ошибка: ' + JSON.stringify(data), 'error');
+            res.status(200).send('Ошибка номер #' + errid);
+          }).once('success',function(data, response) {
+            log('Магазин id=' + req.session.insalesid + ' Успешный запрос: ' + JSON.stringify(data));
+            if (data.res == 'ok') {
+              res.status(200).send('ok');
+            } else {
+              res.status(200).send('Ошибка номер #' + errid);
+            }
+          });
+        } else {
+          res.status(403).send('Приложение не установлено для данного магазина');
+        }
+      }
+    });
+  } else {
+    res.status(403).send('Вход возможен только из панели администратора insales.ru');
+  }
+});
+
 var installCallmaker = function() {
 
 };
