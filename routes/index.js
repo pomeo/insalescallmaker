@@ -155,7 +155,13 @@ router.get('/reg', function(req, res) {
         });
       } else {
         if (app.enabled === true) {
-          res.render('reg');
+          if (app.js === true) {
+            res.redirect('/');
+          } else {
+            res.render('reg', {
+              domain : app.domain
+            });
+          }
         } else {
           res.render('block', {
             msg : 'Приложение не установлено для данного магазина'
@@ -186,9 +192,13 @@ router.get('/login', function(req, res) {
         });
       } else {
         if (app.enabled === true) {
-          res.render('login', {
-            domain : app.domain
-          });
+          if (app.js === true) {
+            res.redirect('/');
+          } else {
+            res.render('login', {
+              domain : app.domain
+            });
+          }
         } else {
           res.render('block', {
             msg : 'Приложение не установлено для данного магазина'
@@ -280,9 +290,13 @@ router.get('/remember', function(req, res) {
         });
       } else {
         if (app.enabled === true) {
-          res.render('remember', {
-            domain : app.domain
-          });
+          if (app.js === true) {
+            res.redirect('/');
+          } else {
+            res.render('remember', {
+              domain : app.domain
+            });
+          }
         } else {
           res.render('block', {
             msg : 'Приложение не установлено для данного магазина'
