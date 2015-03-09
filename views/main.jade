@@ -15,10 +15,12 @@ block content
   div.b-form.b-main
     h2.uk-h2.uk-margin-bottom-remove Регистрационные данные
     hr.uk-margin-top-remove
-    h3.uk-h4.uk-margin-remove Имя
-    p.uk-margin-small.uk-text-bold #{name}
-    h3.uk-h4.uk-margin-remove Телефон
-    p.uk-margin-small.uk-text-bold #{phone}
+    if name !== ''
+      h3.uk-h4.uk-margin-remove Имя
+      p.uk-margin-small.uk-text-bold #{name}
+    if phone !== ''
+      h3.uk-h4.uk-margin-remove Телефон
+      p.uk-margin-small.uk-text-bold #{phone}
     h3.uk-h4.uk-margin-remove Email
     p.uk-margin-small.uk-text-bold #{email}
     div.uk-alert.uk-alert-success Код callmaker установлен в ваш магазин
