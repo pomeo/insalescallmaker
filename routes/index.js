@@ -496,6 +496,7 @@ router.get('/install', function(req, res) {
             name       : '',
             email      : '',
             phone      : '',
+            domain     : '',
             js         : false,
             created_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
             updated_at : moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ'),
@@ -529,6 +530,7 @@ router.get('/install', function(req, res) {
             a.name = '';
             a.email = '';
             a.phone = '';
+            a.domain = '';
             a.updated_at = moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ');
             a.enabled = true;
             a.save(function (err) {
