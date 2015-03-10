@@ -150,8 +150,6 @@ $(document).ready(function() {
             setTimeout(function(){
               window.location.replace('/');
             }, 3000);
-          } else if (response == 'err') {
-            UIkit.notify("Неправильный логин или пароль", {timeout: 0});
           } else {
             UIkit.notify(response, {timeout: 0});
           }
