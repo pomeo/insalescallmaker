@@ -362,6 +362,7 @@ router.post('/login', function(req, res) {
             } else if (data.res == 'err') {
               res.status(200).send('err');
             } else {
+              log('Магазин id=' + req.session.insalesid + ' #' + errid + ' Ошибка: ' + JSON.stringify(data), 'error');
               res.status(200).send('Ошибка номер #' + errid);
             }
           });
@@ -451,6 +452,7 @@ router.post('/remember', function(req, res) {
             if (data.res == 'ok') {
               res.status(200).send('ok');
             } else {
+              log('Магазин id=' + req.session.insalesid + ' #' + errid + ' Ошибка: ' + JSON.stringify(data), 'error');
               res.status(200).send('Ошибка номер #' + errid);
             }
           });
