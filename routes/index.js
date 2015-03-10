@@ -353,7 +353,7 @@ router.post('/login', function(req, res) {
             log('Магазин id=' + req.session.insalesid + ' Успешный запрос: ' + JSON.stringify(data));
             if (data.res == 'ok') {
               var company = {
-                type: 1,
+                domain: '',
                 insalesid: app.insalesid,
                 email: req.body.email.toLowerCase()
               };
