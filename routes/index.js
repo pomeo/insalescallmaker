@@ -158,8 +158,38 @@ router.get('/reg', function(req, res) {
           if (app.js === true) {
             res.redirect('/');
           } else {
-            res.render('reg', {
-              domain : app.domain
+            var errid = cc.generate({ parts : 1, partLen : 6 });
+            rest.get('http://' + process.env.insalesid + ':' + app.token + '@' + app.insalesurl + '/admin/account.xml', {
+              timeout: 5000
+            }).once('timeout', function(ms){
+              log('Магазин id=' + app.insalesid + ' #' + errid + ' Ошибка: Таймаут ' + ms + ' ms', 'error');
+              res.status(200).send('Ошибка номер #' + errid);
+            }).once('error',function(err, response) {
+              log('Магазин id=' + app.insalesid + ' #' + errid + ' Ошибка: ' + err, 'error');
+              res.status(200).send('Ошибка номер #' + errid);
+            }).once('abort',function() {
+              log('Магазин id=' + app.insalesid + ' #' + errid + ' Ошибка: Abort', 'error');
+              res.status(200).send('Ошибка номер #' + errid);
+            }).once('fail',function(data, response) {
+              log('Магазин id=' + app.insalesid + ' #' + errid + ' Ошибка: ' + JSON.stringify(data), 'error');
+              res.status(200).send('Ошибка номер #' + errid);
+            }).once('success',function(data, response) {
+              log('Магазин id=' + app.insalesid + ' Успешный запрос: ' + JSON.stringify(data));
+              if (_.isUndefined(data.account)) {
+                res.render('reg', {
+                  domain : '',
+                  name   : '',
+                  email  : '',
+                  phone  : ''
+                });
+              } else {
+                res.render('reg', {
+                  domain : data.account['main-host'],
+                  name   : data.account.owner.name,
+                  email  : data.account.owner.email,
+                  phone  : data.account.phone.replace(/\D+/g, "").replace(/^[7]/, "")
+                });
+              }
             });
           }
         } else {
