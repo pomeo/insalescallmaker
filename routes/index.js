@@ -95,7 +95,12 @@ router.get('/', function(req, res) {
                   email  : app.email
                 });
               } else {
-                res.render('index');
+                res.render('index', {
+                  domain : app.domain,
+                  name   : app.name,
+                  phone  : app.phone,
+                  email  : app.email
+                });
               }
             } else {
               log('Авторизация ' + req.query.insales_id);
