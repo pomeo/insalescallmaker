@@ -6,8 +6,9 @@ block content
       img(src="/img/logo-black.png")
     div.uk-navbar-flip
      ul.uk-navbar-nav
-       li
-         a(href="http://#{domain}") В магазин
+       if domain !== ''
+         li
+           a(href="http://#{domain}") В магазин
        li
          a.aff(href="http://callmaker.ru/kak-rabotaet-callmaker/") О Callmaker
        li
