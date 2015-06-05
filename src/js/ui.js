@@ -138,6 +138,9 @@ $(document).ready(function() {
       pass: {
         required: ''
       },
+      phonecode: {
+        required: ''
+      },
       phone: {
         required: 'Введи номер телефона, например 4951234567',
         digits: 'Введи номер телефона, например 4951234567',
