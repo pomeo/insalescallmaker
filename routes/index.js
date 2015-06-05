@@ -263,6 +263,8 @@ router.post('/reg', function(req, res) {
             } else if (data.res == 'err') {
               if (data.descr == 'already_registered') {
                 res.status(200).send('Аккаунт уже зарегистирован');
+              } else if (data.descr == 'wrong_login') {
+                res.status(200).send('Неправильный логин');
               } else {
                 log('Магазин id=' + req.session.insalesid + ' #' + errid + ' Ошибка: ' + JSON.stringify(data), 'error');
                 res.status(200).send('Произошла ошибка номер #' + errid);
