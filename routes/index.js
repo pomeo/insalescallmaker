@@ -153,6 +153,7 @@ router.get('/reg', function(req, res) {
               res.status(200).send('Ошибка номер #' + errid);
             }).once('success',function(data, response) {
               log('Магазин id=' + app.insalesid + ' Успешный запрос: ' + JSON.stringify(data));
+              log('Магазин id=' + app.insalesid + ' Домен: ' + data.account['main-host']);
               if (_.isUndefined(data.account)) {
                 res.render('reg', {
                   domain : '',
