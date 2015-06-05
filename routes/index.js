@@ -587,7 +587,7 @@ AppsSchema.add({
   domain      : String, // домен сайта
   name        : String, // имя клиента (также используется для автоматического создания первого менеджера)
   email       : String, // email клиента (его логин)
-  phone       : String, // телефон клиента в международном формате (7XXXXXXXXX)
+  phone       : String, // телефон клиента в международном формате
   js          : Boolean, // флаг установки кода callmaker
   created_at  : Date, // дата создания записи
   updated_at  : Date, // дата изменения записи
