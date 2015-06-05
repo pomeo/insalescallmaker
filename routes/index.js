@@ -8,8 +8,8 @@ var express    = require('express'),
     moment     = require('moment'),
     hat        = require('hat'),
     rest       = require('restler'),
-    GitHubApi = require('github'),
-    github = new GitHubApi({
+    GitHubApi  = require('github'),
+    github     = new GitHubApi({
       version: '3.0.0'
     }),
     crypto     = require('crypto'),
