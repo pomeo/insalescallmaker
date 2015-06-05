@@ -453,14 +453,7 @@ var installCallmaker = function(opt) {
         app.save(function (err) {
           if (err) {
             log('Магазин id=' + opt.insalesid + ' Ошибка: ' + err, 'error');
-            github.issues.create({
-              user: 'pomeo',
-              repo: 'insalescallmaker',
-              title: 'Ошибка при сохранении регистрационных данных, магазин id=' + opt.insalesid,
-              body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
-              assignee: 'pomeo',
-              labels: ['bug', 'operational error']
-            });
+            gerror(err, 'Ошибка при сохранении регистрационных данных, магазин id=' + opt.insalesid);
           } else {
             log('Магазин id=' + opt.insalesid + ' Регистрационные данные сохранены в базу');
           }
