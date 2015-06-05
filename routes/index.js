@@ -85,19 +85,9 @@ router.get('/', function(req, res) {
           if (app.enabled === true) {
             if (req.session.insalesid) {
               if (app.js === true) {
-                res.render('main', {
-                  domain : app.domain,
-                  name   : app.name,
-                  phone  : app.phone,
-                  email  : app.email
-                });
+                res.render('main');
               } else {
-                res.render('index', {
-                  domain : app.domain,
-                  name   : app.name,
-                  phone  : app.phone,
-                  email  : app.email
-                });
+                res.render('index');
               }
             } else {
               log('Авторизация ' + req.query.insales_id);
