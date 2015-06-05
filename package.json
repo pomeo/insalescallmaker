@@ -20,6 +20,7 @@
     "moment": "^2.9.0",
     "mongoose": "^3.8.24",
     "morgan": "^1.5.0",
+    "pushover-notifications": "^0.2.2",
     "restler": "git://github.com/pomeo/restler",
     "serve-favicon": "^2.1.5",
     "strong-agent": "^1.0.3",
