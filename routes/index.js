@@ -23,6 +23,11 @@ github.authenticate({
   token: process.env.github
 });
 
+var p = new push( {
+  user: process.env.PUSHOVER_USER,
+  token: process.env.PUSHOVER_TOKEN
+});
+
 if (process.env.NODE_ENV === 'development') {
   var logger = new (winston.Logger)({
     transports: [
@@ -501,6 +506,17 @@ router.get('/install', function(req, res) {
             } else {
               log('Магазин id=' + req.query.insales_id + ' Установлен');
               res.sendStatus(200);
+              var msg = {
+                message: "+1 установка",
+                title: "Обратный звонок"
+              };
+              p.send(msg, function(err, result) {
+                if (err) {
+                  log(err, 'error');
+                } else {
+                  log(result);
+                }
+              });
             }
           });
         } else {
@@ -525,6 +541,17 @@ router.get('/install', function(req, res) {
               } else {
                 log('Магазин id=' + req.query.insales_id + ' Установлен');
                 res.sendStatus(200);
+                var msg = {
+                  message: "+1 установка",
+                  title: "Обратный звонок"
+                };
+                p.send(msg, function(err, result) {
+                  if (err) {
+                    log(err, 'error');
+                  } else {
+                    log(result);
+                  }
+                });
               }
             });
           }
@@ -556,6 +583,17 @@ router.get('/uninstall', function(req, res) {
           } else {
             log('Магазин id=' + req.query.insales_id + ' Удалён');
             res.sendStatus(200);
+            var msg = {
+              message: "-1 установка",
+              title: "Обратный звонок"
+            };
+            p.send(msg, function(err, result) {
+              if (err) {
+                log(err, 'error');
+              } else {
+                log(result);
+              }
+            });
           }
         });
       } else {
