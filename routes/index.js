@@ -487,86 +487,50 @@ var installCallmaker = function(opt) {
       });
     } else {
       var errid = cc.generate({ parts : 1, partLen : 6 });
-      rest.get('http://callmaker.ru/api/company/' + opt.email + '/basic/', {
-        timeout: 5000
+      var xml = 'clbId="' + opt.email + '";'
+              + 'var fileref = document.createElement(\"script\");'
+              + 'fileref.setAttribute(\"type\",\"text/javascript\");'
+              + 'fileref.charset=\'utf-8\';'
+              + 'fileref.async = true;'
+              + 'fileref.setAttribute(\"src\", \"http://callmaker.ru/witget/witget.min.js\");'
+              + 'document.getElementsByTagName(\"head\")[0].appendChild(fileref);';
+      var jstag = '<js-tag>'
+                + '<type type="string">JsTag::TextTag</type>'
+                + '<content>' + xml + '</content>'
+                + '</js-tag>';
+      rest.post('http://' + process.env.insalesid + ':' + app.token + '@' + app.insalesurl + '/admin/js_tags.xml', {
+        data: jstag,
+        headers: {
+          'Content-Type': 'application/xml'
+        }
       }).once('timeout', function(ms){
         log('Магазин id=' + opt.insalesid + ' Ошибка: Таймаут ' + ms + ' ms', 'error');
-      }).once('error',function(err, response) {
-        log('Магазин id=' + opt.insalesid + ' Ошибка: ' + err, 'error');
+      }).once('error',function(e, resp) {
+        log('Магазин id=' + opt.insalesid + ' Ошибка: ' + e, 'error');
       }).once('abort',function() {
         log('Магазин id=' + opt.insalesid + ' Ошибка: Abort', 'error');
-      }).once('fail',function(data, response) {
-        log('Магазин id=' + opt.insalesid + ' Ошибка: ' + JSON.stringify(data), 'error');
-      }).once('success',function(data, response) {
-        log('Магазин id=' + opt.insalesid + ' Успешный запрос: ' + JSON.stringify(data));
-        var xml = 'clbId="' + opt.email + '";'
-                + 'var fileref = document.createElement(\"script\");'
-                + 'fileref.setAttribute(\"type\",\"text/javascript\");'
-                + 'fileref.charset=\'utf-8\';'
-                + 'fileref.async = true;'
-                + 'fileref.setAttribute(\"src\", \"http://callmaker.ru/witget/witget.min.js\");'
-                + 'document.getElementsByTagName(\"head\")[0].appendChild(fileref);';
-        var jstag = '<js-tag>'
-                  + '<type type="string">JsTag::TextTag</type>'
-                  + '<content>' + xml + '</content>'
-                  + '</js-tag>';
-        rest.post('http://' + process.env.insalesid + ':' + app.token + '@' + app.insalesurl + '/admin/js_tags.xml', {
-          data: jstag,
-          headers: {
-            'Content-Type': 'application/xml'
-          }
-        }).once('timeout', function(ms){
-          log('Магазин id=' + opt.insalesid + ' Ошибка: Таймаут ' + ms + ' ms', 'error');
-        }).once('error',function(e, resp) {
-          log('Магазин id=' + opt.insalesid + ' Ошибка: ' + e, 'error');
-        }).once('abort',function() {
-          log('Магазин id=' + opt.insalesid + ' Ошибка: Abort', 'error');
-        }).once('fail',function(d, resp) {
-          log('Магазин id=' + opt.insalesid + ' Ошибка: ' + JSON.stringify(d), 'error');
-        }).once('success',function(d, resp) {
-          log('Магазин id=' + opt.insalesid + ' Код JS установлен: ' + JSON.stringify(d));
-          if (data.res == 'ok') {
-            app.domain = opt.domain;
-            app.name = data.manager.name;
-            app.email = data.manager.email;
-            app.phone = data.manager.phone;
-            app.js = true;
-            app.save(function (err) {
-              if (err) {
-                log('Магазин id=' + opt.insalesid + ' Ошибка: ' + err, 'error');
-                github.issues.create({
-                  user: 'pomeo',
-                  repo: 'insalescallmaker',
-                  title: 'Ошибка при сохранении регистрационных данных, магазин id=' + opt.insalesid,
-                  body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
-                  assignee: 'pomeo',
-                  labels: ['bug', 'operational error']
-                });
-              } else {
-                log('Магазин id=' + opt.insalesid + ' Регистрационные данные сохранены в базу');
-              }
+      }).once('fail',function(d, resp) {
+        log('Магазин id=' + opt.insalesid + ' Ошибка: ' + JSON.stringify(d), 'error');
+      }).once('success',function(d, resp) {
+        log('Магазин id=' + opt.insalesid + ' Код JS установлен: ' + JSON.stringify(d));
+        app.domain = opt.domain;
+        app.name = '';
+        app.email = '';
+        app.phone = '';
+        app.js = true;
+        app.save(function (err) {
+          if (err) {
+            log('Магазин id=' + opt.insalesid + ' Ошибка: ' + err, 'error');
+            github.issues.create({
+              user: 'pomeo',
+              repo: 'insalescallmaker',
+              title: 'Ошибка при сохранении регистрационных данных, магазин id=' + opt.insalesid,
+              body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
+              assignee: 'pomeo',
+              labels: ['bug', 'operational error']
             });
           } else {
-            app.domain = opt.domain;
-            app.name = '';
-            app.email = opt.email;
-            app.phone = '';
-            app.js = true;
-            app.save(function (err) {
-              if (err) {
-                log('Магазин id=' + opt.insalesid + ' Ошибка: ' + err, 'error');
-                github.issues.create({
-                  user: 'pomeo',
-                  repo: 'insalescallmaker',
-                  title: 'Ошибка при сохранении регистрационных данных, магазин id=' + opt.insalesid,
-                  body: JSON.stringify(err).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
-                  assignee: 'pomeo',
-                  labels: ['bug', 'operational error']
-                });
-              } else {
-                log('Магазин id=' + opt.insalesid + ' Регистрационные данные сохранены в базу');
-              }
-            });
+            log('Магазин id=' + opt.insalesid + ' Регистрационные данные сохранены в базу');
           }
         });
       });
