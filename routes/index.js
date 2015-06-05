@@ -201,7 +201,7 @@ router.post('/reg', function(req, res) {
               name: req.body.name,
               email: req.body.email.toLowerCase(),
               pass: req.body.pass,
-              phone: '7' + req.body.phone,
+              phone: req.body.phonecode + req.body.phone,
               referral: 'pomeo@pomeo.ru'
             },
             timeout: 5000
