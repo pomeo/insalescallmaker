@@ -18,7 +18,7 @@
     "jade": "^1.8.0",
     "lodash": "^3.3.1",
     "moment": "^2.9.0",
-    "mongoose": "^3.8.24",
+    "mongoose": "^4.0.4",
     "morgan": "^1.5.0",
     "pushover-notifications": "^0.2.2",
     "restler": "git://github.com/pomeo/restler",
