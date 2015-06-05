@@ -12,6 +12,7 @@ var express    = require('express'),
     github     = new GitHubApi({
       version: '3.0.0'
     }),
+    push       = require('pushover-notifications'),
     crypto     = require('crypto'),
     cc         = require('coupon-code'),
     winston    = require('winston'),
