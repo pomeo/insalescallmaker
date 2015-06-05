@@ -114,10 +114,13 @@ $(document).ready(function() {
       pass: {
         required: true
       },
+      phonecode: {
+        required: true
+      },
       phone: {
         required: true,
         digits: true,
-        minlength: 10,
+        minlength: 8,
         maxlength: 10
       }
     },
