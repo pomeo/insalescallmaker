@@ -172,7 +172,7 @@ router.get('/reg', function(req, res) {
                   domain : data.account['main-host'],
                   name   : data.account.owner.name,
                   email  : data.account.owner.email,
-                  phone  : data.account.phone.replace(/\D+/g, "")
+                  phone  : data.account.phone.toString().replace(/\D+/g, "")
                 });
               }
             });
