@@ -144,6 +144,12 @@ router.get('/reg', function(req, res) {
           } else {
             var errid = cc.generate({ parts : 1, partLen : 6 });
             rest.get('http://' + process.env.insalesid + ':' + app.token + '@' + app.insalesurl + '/admin/account.xml', {
+              headers: {'Content-Type': 'application/xml'},
+              xml2js: {
+                trim: false,
+                explicitArray: false,
+                ignoreAttrs: true
+              },
               timeout: 5000
             }).once('timeout', function(ms){
               log('Магазин id=' + app.insalesid + ' #' + errid + ' Ошибка: Таймаут ' + ms + ' ms', 'error');
@@ -172,7 +178,7 @@ router.get('/reg', function(req, res) {
                   domain : data.account['main-host'],
                   name   : data.account.owner.name,
                   email  : data.account.owner.email,
-                  phone  : data.account.phone.toString().replace(/\D+/g, "")
+                  phone  : data.account.phone.replace(/\D+/g, "")
                 });
               }
             });
