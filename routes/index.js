@@ -468,6 +468,17 @@ var installCallmaker = function(opt) {
             gerror(err, 'Ошибка при сохранении регистрационных данных, магазин id=' + opt.insalesid);
           } else {
             log('Магазин id=' + opt.insalesid + ' Регистрационные данные сохранены в базу');
+            var msg = {
+              message: "+1 установка",
+              title: "Обратный звонок"
+            };
+            p.send(msg, function(err, result) {
+              if (err) {
+                log(err, 'error');
+              } else {
+                log(result);
+              }
+            });
           }
         });
       });
@@ -512,17 +523,6 @@ router.get('/install', function(req, res) {
             } else {
               log('Магазин id=' + req.query.insales_id + ' Установлен');
               res.sendStatus(200);
-              var msg = {
-                message: "+1 установка",
-                title: "Обратный звонок"
-              };
-              p.send(msg, function(err, result) {
-                if (err) {
-                  log(err, 'error');
-                } else {
-                  log(result);
-                }
-              });
             }
           });
         } else {
@@ -547,17 +547,6 @@ router.get('/install', function(req, res) {
               } else {
                 log('Магазин id=' + req.query.insales_id + ' Установлен');
                 res.sendStatus(200);
-                var msg = {
-                  message: "+1 установка",
-                  title: "Обратный звонок"
-                };
-                p.send(msg, function(err, result) {
-                  if (err) {
-                    log(err, 'error');
-                  } else {
-                    log(result);
-                  }
-                });
               }
             });
           }
