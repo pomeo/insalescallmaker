@@ -8,7 +8,7 @@ set :application, "callmaker.salesapps.ru"
 require           "capistrano-offroad"
 offroad_modules   "defaults", "supervisord"
 set :repository,  "git@github.com:pomeo/insalescallmaker.git"
-set :deploy_to,   "/home/ubuntu/www/callmaker"
+set :deploy_to,   "/home/ubuntu/projects/callmaker"
 set :supervisord_start_group, "callmaker"
 set :supervisord_stop_group,  "callmaker"
 #========================
