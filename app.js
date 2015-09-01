@@ -1,5 +1,5 @@
 var express = require('express');
-var debug = require('debug')('my-application');
+var debug = require('debug')('app');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var path = require('path');
@@ -104,7 +104,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
-var server = app.listen(app.get('port'), function() {
-               debug('Express server listening on port ' + server.address().port);
+var server = app.listen(app.get('port'), '127.0.0.1', function() {
+               debug('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
              });

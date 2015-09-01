@@ -19,7 +19,7 @@ role :app,        "ubuntu@#{application}"
 namespace :deploy do
   desc "Change node.js port"
   task :chg_port do
-    run "sed -i 's/3000/10000/g' #{current_path}/app.js"
+    run "sed -i 's/3000/3300/g' #{current_path}/app.js"
   end
 end
 
