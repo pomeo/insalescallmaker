@@ -526,30 +526,26 @@ router.get('/install', function(req, res) {
             }
           });
         } else {
-          if (a.enabled === true) {
-            res.status(403).send('Приложение уже установленно');
-          } else {
-            a.token = crypto.createHash('md5')
-                      .update(req.query.token + process.env.insalessecret)
-                      .digest('hex');
-            a.js = false;
-            a.name = '';
-            a.email = '';
-            a.phone = '';
-            a.domain = '';
-            a.updated_at = moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ');
-            a.enabled = true;
-            a.save(function (err) {
-              if (err) {
-                log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
-                res.status(500).send({ error: err });
-                gerror(err, 'Ошибка при установке приложения, этап обновления данных, магазин id=' + req.query.insales_id);
-              } else {
-                log('Магазин id=' + req.query.insales_id + ' Установлен');
-                res.sendStatus(200);
-              }
-            });
-          }
+          a.token = crypto.createHash('md5')
+                    .update(req.query.token + process.env.insalessecret)
+                    .digest('hex');
+          a.js = false;
+          a.name = '';
+          a.email = '';
+          a.phone = '';
+          a.domain = '';
+          a.updated_at = moment().format('ddd, DD MMM YYYY HH:mm:ss ZZ');
+          a.enabled = true;
+          a.save(function (err) {
+            if (err) {
+              log('Магазин id=' + req.query.insales_id + ' Ошибка: ' + err, 'error');
+              res.status(500).send({ error: err });
+              gerror(err, 'Ошибка при установке приложения, этап обновления данных, магазин id=' + req.query.insales_id);
+            } else {
+              log('Магазин id=' + req.query.insales_id + ' Установлен');
+              res.sendStatus(200);
+            }
+          });
         }
       }
     });
