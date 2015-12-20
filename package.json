@@ -82,6 +82,7 @@
     "restler": "^3.4.0",
     "rollbar": "^0.5.10",
     "serve-favicon": "^2.3.0",
+    "velocity-animate": "^1.2.3",
     "webpack": "^1.12.9",
     "winston-logs": "^1.0.0"
   },
