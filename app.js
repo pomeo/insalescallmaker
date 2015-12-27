@@ -1,24 +1,16 @@
-var express = require('express');
-var debug = require('debug')('app');
-var session = require('express-session');
-var RedisStore = require('connect-redis')(session);
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var GitHubApi = require('github');
-var github = new GitHubApi({
-  version: '3.0.0'
-});
-github.authenticate({
-  type: 'oauth',
-  token: process.env.github
-});
+const express      = require('express');
+const debug        = require('debug')('app');
+const session      = require('express-session');
+const RedisStore   = require('connect-redis')(session);
+const path         = require('path');
+const favicon      = require('serve-favicon');
+const logger       = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser   = require('body-parser');
+const rollbar      = require('rollbar');
+const routes       = require('./routes/index');
 
-var routes = require('./routes/index');
-
-var app = express();
+const app          = express();
 
 app.set('port', process.env.PORT || 3000);
 
@@ -29,28 +21,28 @@ if (app.get('env') !== 'development') {
   app.enable('view cache');
 }
 app.set('trust proxy', 1);
-app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(favicon(`${__dirname}/public/favicon.ico`));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: true
+  extended: true,
 }));
 app.use(cookieParser());
-var sessionConfig = {
+const sessionConfig = {
   store: new RedisStore({
-    host:process.env.redis,
-    port:6379,
-    pass:''
+    host: process.env.redis,
+    port: 6379,
+    pass: '',
   }),
   secret: process.env.SECRET,
   proxy: true,
   cookie: {
     httpOnly: true,
     secure: false,
-    maxAge: null
+    maxAge: null,
   },
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
 };
 
 if (app.get('env') !== 'production') {
@@ -60,50 +52,41 @@ if (app.get('env') !== 'production') {
 
 app.use(session(sessionConfig));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(rollbar.errorHandler(process.env.rollbar));
 
 app.use('/', routes);
 
-/// catch 404 and forwarding to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Страница не найдена');
+// catch 404 and forwarding to error handler
+app.use((req, res, next) => {
+  const err = new Error('Страница не найдена');
   err.status = 404;
   next(err);
 });
 
-/// error handlers
+// error handlers
 
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
-      error: err
+      error: err,
     });
   });
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use((err, req, res, next) => {
   res.status(err.status || 500);
-  if (err.status !== 404) {
-    github.issues.create({
-      user: 'pomeo',
-      repo: 'insalescallmaker',
-      title: err.message.toString(),
-      body: JSON.stringify(err.stack).replace(/(\\r\\n|\\n|\\r)/gi,"<br />"),
-      assignee: 'pomeo',
-      labels: ['bug', 'programmer error']
-    });
-  }
   res.render('error', {
     message: err.message,
-    error: {}
+    error: {},
   });
 });
 
-app.listen(app.get('port'), '0.0.0.0', function() {
-  debug('Express server listening on port %d in %s mode', app.get('port'), app.get('env'));
+app.listen(app.get('port'), '0.0.0.0', () => {
+  debug(`Express server listening on port ${app.get('port')} in ${app.get('env')} mode`);
 });
