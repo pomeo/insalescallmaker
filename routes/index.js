@@ -112,7 +112,7 @@ router.get('/', (req, res) => {
                 res.render('index');
               }
             } else {
-              log(`Авторизация ${req.query.insales_id}`);
+              log.info(`Авторизация ${req.query.insales_id}`);
               const id = hat();
               app.autologin = crypto.createHash('md5')
                 .update(id + app.token)
@@ -626,7 +626,7 @@ router.get('/uninstall', (req, res) => {
               if (err) {
                 log.error(err);
               } else {
-                log(result);
+                log.info(result);
               }
             });
           }
