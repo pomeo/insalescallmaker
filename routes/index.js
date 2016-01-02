@@ -10,8 +10,8 @@ const push     = require('pushover-notifications');
 const crypto   = require('crypto');
 const cc       = require('coupon-code');
 const insales  = require('insales')({
-  id: 'BTTpb6oKWDa89nCyMznf8vo2Jb82EZ',
-  secret: '3e27768246a3535ba3f9d1378c38cba3',
+  id: process.env.insalesid,
+  secret: process.env.insalessecret,
 });
 const P        = new push({
   user: process.env.PUSHOVER_USER,
